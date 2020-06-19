@@ -1,14 +1,17 @@
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext('2d');
 const colors = document.getElementsByClassName('jsColor');
+const range = document.getElementById('jsRange');
 
+const DEFAULT_LINEWIDTH = 2.5;
 const DEFAULT_COLOR = "#2C2C2C";
+
 // pixel manipulate를 위해 캔버스의 width height 설정.
 canvas.width = 700;
 canvas.height = 700;
 
 // context 설정
-ctx.linewidth = 2.5; /*선이 넓이(굵기).*/
+ctx.lineWidth = DEFAULT_LINEWIDTH; /*선이 넓이(굵기).*/
 ctx.strokeStyle = "DEFAULT_COLOR"; /*우리가 그릴 색 선*/
 
 let painting = false;
@@ -45,6 +48,11 @@ function handleColorClick(event){
 	ctx.strokeStyle = color;
 }
 
+function handleRangeChange(event){
+	const size = event.target.valueAsNumber;
+	ctx.lineWidth = size;
+}
+
 if(canvas){
 	canvas.addEventListener("mousemove", onMouseMove);
 	canvas.addEventListener("mousedown", onMouseDown);
@@ -53,3 +61,7 @@ if(canvas){
 }
 
 Array.from(colors).forEach(color => color.addEventListener("click", handleColorClick));
+
+if(range){
+	range.addEventListener("input", handleRangeChange);
+}
