@@ -2,19 +2,22 @@ const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext('2d');
 const colors = document.getElementsByClassName('jsColor');
 const range = document.getElementById('jsRange');
+const mode = document.getElementById("jsMode");
 
 const DEFAULT_LINEWIDTH = 2.5;
 const DEFAULT_COLOR = "#2C2C2C";
-
+const CANVAS_SIZE = 700;
 // pixel manipulate를 위해 캔버스의 width height 설정.
-canvas.width = 700;
-canvas.height = 700;
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
 
 // context 설정
 ctx.lineWidth = DEFAULT_LINEWIDTH; /*선이 넓이(굵기).*/
 ctx.strokeStyle = "DEFAULT_COLOR"; /*우리가 그릴 색 선*/
+ctx.fillStyle = "DEFAULT_COLOR";
 
 let painting = false;
+let filling = false;
 
 function stopPainting(){
 	painting = false;
@@ -46,6 +49,7 @@ function onMouseDown(event){
 function handleColorClick(event){
 	const color = event.target.style.backgroundColor;
 	ctx.strokeStyle = color;
+	ctx.fillStyle = color;
 }
 
 function handleRangeChange(event){
@@ -53,11 +57,30 @@ function handleRangeChange(event){
 	ctx.lineWidth = size;
 }
 
+function handleModeClick(){
+	if(filling === true){
+		filling = false;
+		mode.innerText = "Fill";
+		/*그리기*/
+	} else {
+		filling = true;
+		mode.innerText = "Paint";
+		/*채우기*/
+	}
+}
+
+function handleCanvasClick(){
+	if(filling){
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+}
+
 if(canvas){
 	canvas.addEventListener("mousemove", onMouseMove);
 	canvas.addEventListener("mousedown", onMouseDown);
 	canvas.addEventListener("mouseup", stopPainting);
 	canvas.addEventListener("mouseleave", stopPainting); /*마우스가 캔버스를 벗어나기 시작하면 그리기 중지*/
+	canvas.addEventListener("click", handleCanvasClick);
 }
 
 Array.from(colors).forEach(color => color.addEventListener("click", handleColorClick));
@@ -65,3 +88,8 @@ Array.from(colors).forEach(color => color.addEventListener("click", handleColorC
 if(range){
 	range.addEventListener("input", handleRangeChange);
 }
+
+if(mode){
+	mode.addEventListener("click", handleModeClick)
+}
+
